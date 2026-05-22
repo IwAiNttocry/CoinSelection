@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class CoinSelection : MonoBehaviour
 {
-    [SerializeField] private Camera mainCamera;
+    [SerializeField] private Camera _mainCamera;
 
     private CoinBehaviour _hoveredPiece;
     private List<CoinBehaviour> _selectedPieces = new List<CoinBehaviour>();
@@ -17,12 +17,9 @@ public class CoinSelection : MonoBehaviour
         CheckClick();
     }
 
-    // ─── Hover ────────────────────────────────────────────────────────────────
-
     void CheckHover()
     {
         if (Vector3.Distance(Input.mousePosition, _lastMousePos) < 5f) return;
-
         _lastMousePos = Input.mousePosition;
 
         Vector2Int currentSquare = GetSquareUnderMouse();
@@ -43,8 +40,6 @@ public class CoinSelection : MonoBehaviour
             _hoveredPiece = null;
         }
     }
-
-    // ─── Click ────────────────────────────────────────────────────────────────
 
     void CheckClick()
     {
@@ -81,11 +76,13 @@ public class CoinSelection : MonoBehaviour
         }
     }
 
-    // ─── Raycasts ─────────────────────────────────────────────────────────────
+    public List<CoinBehaviour> GetSelectedPieces() => _selectedPieces;
+
+    public void ClearHovered() { _hoveredPiece = null; }
 
     Vector2Int GetSquareUnderMouse()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
             return new Vector2Int(Mathf.FloorToInt(hit.point.x), Mathf.FloorToInt(hit.point.z));
         return -Vector2Int.one;
@@ -93,7 +90,7 @@ public class CoinSelection : MonoBehaviour
 
     CoinBehaviour GetPieceUnderMouse()
     {
-        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
         foreach (RaycastHit hit in Physics.RaycastAll(ray, Mathf.Infinity))
         {
             CoinBehaviour piece = hit.transform.GetComponent<CoinBehaviour>();
