@@ -1,12 +1,13 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 public class CoinSelection : MonoBehaviour
 {
     [SerializeField] private Camera mainCamera;
 
     private CoinBehaviour _hoveredPiece;
-    private CoinBehaviour _selectedPiece;
+    private List<CoinBehaviour> _selectedPieces = new List<CoinBehaviour>();
     private Vector2Int _lastSquare = -Vector2Int.one;
     private Vector3 _lastMousePos;
 
@@ -20,7 +21,6 @@ public class CoinSelection : MonoBehaviour
 
     void CheckHover()
     {
-        if (_selectedPiece != null) return;
         if (Vector3.Distance(Input.mousePosition, _lastMousePos) < 5f) return;
 
         _lastMousePos = Input.mousePosition;
@@ -31,7 +31,7 @@ public class CoinSelection : MonoBehaviour
 
         CoinBehaviour hit = GetPieceUnderMouse();
 
-        if (hit != null && _hoveredPiece == null)
+        if (hit != null && _hoveredPiece == null && !_selectedPieces.Contains(hit))
         {
             _hoveredPiece = hit;
             _hoveredPiece.OnHoverEnter();
@@ -50,10 +50,11 @@ public class CoinSelection : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            if (_selectedPiece != null)
+            CoinBehaviour rightHit = GetPieceUnderMouse();
+            if (rightHit != null && _selectedPieces.Contains(rightHit))
             {
-                _selectedPiece.OnDeselect();
-                _selectedPiece = null;
+                rightHit.OnDeselect();
+                _selectedPieces.Remove(rightHit);
             }
             return;
         }
@@ -62,8 +63,23 @@ public class CoinSelection : MonoBehaviour
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
         CoinBehaviour hit = GetPieceUnderMouse();
-    }
 
+        if (hit != null)
+        {
+            if (_selectedPieces.Contains(hit))
+            {
+                hit.OnDeselect();
+                _selectedPieces.Remove(hit);
+            }
+            else
+            {
+                bool wasHovered = (_hoveredPiece == hit);
+                _selectedPieces.Add(hit);
+                hit.OnSelect(wasHovered);
+                _hoveredPiece = null;
+            }
+        }
+    }
 
     // ─── Raycasts ─────────────────────────────────────────────────────────────
 
