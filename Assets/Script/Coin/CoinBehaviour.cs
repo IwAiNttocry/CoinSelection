@@ -3,8 +3,8 @@ using UnityEngine;
 public class CoinBehaviour : MonoBehaviour
 {
     
-    [SerializeField] private Camera mainCamera;
-    [SerializeField] private CoinSelection selctor;
+    [SerializeField] private Camera _mainCamera;
+    [SerializeField] private CoinSelection _selctor;
 
     private static readonly Vector3 LiftOffset = Vector3.up * 0.5f;
 

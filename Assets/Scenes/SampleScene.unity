@@ -1485,6 +1485,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6008d60c38c5e4f49b63d47736e12538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Discard
+  _coinSelection: {fileID: 2019545896}
 --- !u!1 &1735673464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1579,6 +1580,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2019545896 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3342273874455531132, guid: 9489d968cc64d3f47a5a8a3184c01e95, type: 3}
+  m_PrefabInstance: {fileID: 1513787952137203131}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b417f5504ea8a524bbf40892f879f0ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CoinSelection
 --- !u!1001 &1513787952137203131
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1589,6 +1601,10 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3342273874455531132, guid: 9489d968cc64d3f47a5a8a3184c01e95, type: 3}
       propertyPath: mainCamera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 3342273874455531132, guid: 9489d968cc64d3f47a5a8a3184c01e95, type: 3}
+      propertyPath: _mainCamera
       value: 
       objectReference: {fileID: 330585545}
     - target: {fileID: 6075208612145570347, guid: 9489d968cc64d3f47a5a8a3184c01e95, type: 3}
