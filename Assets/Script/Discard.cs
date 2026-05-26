@@ -1,38 +1,51 @@
 using UnityEngine;
 using System.Collections.Generic;
+using DG.Tweening;
 
 public class Discard : MonoBehaviour
 {
     [SerializeField] private CoinSelection _coinSelection;
     [SerializeField] private GameObject _coinPrefab;
-    [SerializeField] private Transform[] _spawnPoints;
+    [SerializeField] private float _spawnDelay = 2f;
 
-    public static List<int> EmptySpawnIndices = new List<int>();
+    public static bool IsOnCooldown = false;
 
     public void OnDiscard()
     {
-        foreach (CoinBehaviour coin in _coinSelection.GetSelectedPieces())
+        if (IsOnCooldown) return;
+
+        List<CoinBehaviour> selected = _coinSelection.GetSelectedPieces();
+        if (selected.Count == 0) return;
+
+        IsOnCooldown = true;
+
+        foreach (CoinBehaviour coin in selected)
         {
             if (coin == null) continue;
-            int closest = GetClosestSpawnIndex(coin.transform.position);
-            if (!EmptySpawnIndices.Contains(closest))
-                EmptySpawnIndices.Add(closest);
-            Destroy(coin.gameObject);
+
+            Vector3 spawnPos = coin.transform.position - Vector3.up * 0.5f;
+
+            // Shrink and destroy
+            coin.transform.DOKill();
+            coin.transform.DOScale(Vector3.zero, 0.3f)
+                .SetEase(Ease.InBack)
+                .OnComplete(() =>
+                {
+                    Destroy(coin.gameObject);
+
+                    // Spawn replacement after delay
+                    DOVirtual.DelayedCall(_spawnDelay, () =>
+                    {
+                        GameObject newCoin = Instantiate(_coinPrefab, spawnPos, Quaternion.identity);
+                        newCoin.transform.localScale = Vector3.zero;
+                        newCoin.transform.DOScale(Vector3.one, 0.5f).SetEase(Ease.OutBack);
+                    });
+                });
         }
 
-        _coinSelection.GetSelectedPieces().Clear();
+        selected.Clear();
         _coinSelection.ClearHovered();
-    }
 
-    private int GetClosestSpawnIndex(Vector3 pos)
-    {
-        int closest = 0;
-        float minDist = float.MaxValue;
-        for (int i = 0; i < _spawnPoints.Length; i++)
-        {
-            float dist = Vector3.Distance(pos, _spawnPoints[i].position);
-            if (dist < minDist) { minDist = dist; closest = i; }
-        }
-        return closest;
+        DOVirtual.DelayedCall(_spawnDelay + 0.5f, () => IsOnCooldown = false);
     }
 }
