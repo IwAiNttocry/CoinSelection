@@ -1487,12 +1487,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Discard
   _coinSelection: {fileID: 2019545896}
   _coinPrefab: {fileID: 3118161225467696685, guid: 3e0e4daff1942b8449c557debe5269f3, type: 3}
-  _spawnPoints:
-  - {fileID: 702974376}
-  - {fileID: 329209256}
-  - {fileID: 466234786}
-  - {fileID: 1939976622}
-  - {fileID: 1735673466}
+  _spawnDelay: 1
+  _cooldownBuffer: 0.1
 --- !u!1 &1735673464
 GameObject:
   m_ObjectHideFlags: 0
@@ -1731,12 +1727,12 @@ SceneRoots:
   - {fileID: 132785421}
   - {fileID: 702974376}
   - {fileID: 1471442481}
-  - {fileID: 5978356}
   - {fileID: 329209256}
+  - {fileID: 5978356}
   - {fileID: 466234786}
   - {fileID: 908295722}
   - {fileID: 1939976622}
   - {fileID: 1520615946}
-  - {fileID: 1569593671}
   - {fileID: 1735673466}
+  - {fileID: 1569593671}
   - {fileID: 638843822}
