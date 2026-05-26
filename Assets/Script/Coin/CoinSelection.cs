@@ -12,10 +12,11 @@ public class CoinSelection : MonoBehaviour
     private Vector3 _lastMousePos;
 
     void Update()
-    {
-        CheckHover();
-        CheckClick();
-    }
+{
+    if (Discard.IsOnCooldown) return; 
+    CheckHover();
+    CheckClick();
+}
 
     void CheckHover()
     {
