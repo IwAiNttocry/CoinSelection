@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using System.Collections.Generic;
 
 public class CoinSelection : MonoBehaviour
@@ -9,19 +10,20 @@ public class CoinSelection : MonoBehaviour
     private CoinBehaviour _hoveredPiece;
     private List<CoinBehaviour> _selectedPieces = new List<CoinBehaviour>();
     private Vector2Int _lastSquare = -Vector2Int.one;
-    private Vector3 _lastMousePos;
+    private Vector2 _lastMousePos;
 
     void Update()
-{
-    if (Discard.IsOnCooldown) return; 
-    CheckHover();
-    CheckClick();
-}
+    {
+        if (Discard.IsOnCooldown) return;
+        CheckHover();
+        CheckClick();
+    }
 
     void CheckHover()
     {
-        if (Vector3.Distance(Input.mousePosition, _lastMousePos) < 5f) return;
-        _lastMousePos = Input.mousePosition;
+        Vector2 mousePos = Mouse.current.position.ReadValue();
+        if (Vector2.Distance(mousePos, _lastMousePos) < 5f) return;
+        _lastMousePos = mousePos;
 
         Vector2Int currentSquare = GetSquareUnderMouse();
         if (currentSquare == _lastSquare) return;
@@ -44,7 +46,7 @@ public class CoinSelection : MonoBehaviour
 
     void CheckClick()
     {
-        if (Input.GetMouseButtonDown(1))
+        if (Mouse.current.rightButton.wasPressedThisFrame)
         {
             CoinBehaviour rightHit = GetPieceUnderMouse();
             if (rightHit != null && _selectedPieces.Contains(rightHit))
@@ -55,7 +57,7 @@ public class CoinSelection : MonoBehaviour
             return;
         }
 
-        if (!Input.GetMouseButtonDown(0)) return;
+        if (!Mouse.current.leftButton.wasPressedThisFrame) return;
         if (EventSystem.current.IsPointerOverGameObject()) return;
 
         CoinBehaviour hit = GetPieceUnderMouse();
@@ -83,7 +85,7 @@ public class CoinSelection : MonoBehaviour
 
     Vector2Int GetSquareUnderMouse()
     {
-        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         if (Physics.Raycast(ray, out RaycastHit hit))
             return new Vector2Int(Mathf.FloorToInt(hit.point.x), Mathf.FloorToInt(hit.point.z));
         return -Vector2Int.one;
@@ -91,7 +93,7 @@ public class CoinSelection : MonoBehaviour
 
     CoinBehaviour GetPieceUnderMouse()
     {
-        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
         foreach (RaycastHit hit in Physics.RaycastAll(ray, Mathf.Infinity))
         {
             CoinBehaviour piece = hit.transform.GetComponent<CoinBehaviour>();
